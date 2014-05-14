@@ -1,0 +1,456 @@
+--- rasdaman-8.3.1/configure.ac.orig	2013-01-26 22:25:07.068047331 +0100
++++ rasdaman-8.3.1/configure.ac	2013-01-26 22:26:50.311378512 +0100
+@@ -19,7 +19,7 @@
+ AC_PROG_INSTALL
+ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+-AC_PROG_RANLIB
++AC_PROG_LIBTOOL
+ AC_PROG_RPCGEN
+ AC_PROG_SED
+ AM_PROG_CC_C_O
+--- rasdaman-8.3.1/catalogmgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/catalogmgr/Makefile.am	2012-11-11 17:11:06.649784254 +0100
+@@ -36,8 +36,8 @@
+ AM_LDFLAGS= $(BASEDBLDFLAGS)    
+ 
+ # object files to put in library
+-lib_LIBRARIES=libcatalogmgr.a
+-libcatalogmgr_a_SOURCES=ops.cc typefactory.cc algebraops.cc ops.hh \
++lib_LTLIBRARIES=librascatalogmgr.la
++librascatalogmgr_la_SOURCES=ops.cc typefactory.cc algebraops.cc ops.hh \
+                         typefactory.hh algebraops.hh autogen_ops.hh
+-EXTRA_libcatalogmgr_a_SOURCES = autogen_ops.cc
++EXTRA_librascatalogmgr_la_SOURCES = autogen_ops.cc
+ 
+--- rasdaman-8.3.1/clientcomm/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/clientcomm/Makefile.am	2012-11-13 16:08:24.142690422 +0100
+@@ -32,8 +32,8 @@
+ AM_CXXFLAGS = @CLIENTCXXFLAGS@
+ AM_LDFLAGS = @CLIENTLDFLAGS@
+ 
+-lib_LIBRARIES=libclientcomm.a
+-libclientcomm_a_SOURCES = rpcif_clnt.cc rpcif_xdr.c rpcif.h \
++lib_LTLIBRARIES=librasclientcomm.la
++librasclientcomm_la_SOURCES = rpcif_clnt.cc rpcif_xdr.c rpcif.h \
+                           clientcomm.cc clientcomm.hh rpcclientcomm.cc \
+                           rpcclientcomm.hh clientcomm.icc \
+                           ../mymalloc/mymalloc_cln.cc ../mymalloc/mymalloc.h \
+@@ -47,9 +47,9 @@
+                           ../rnprotocol/rnpclientcomm.cc \
+                           ../rnprotocol/rnpclientcomm2.cc \
+                           ../rnprotocol/rnpclientcomm.hh
+-libclientcomm_a_CPPFLAGS=-I../rnprotocol
++librasclientcomm_la_CPPFLAGS=-I../rnprotocol
+ 
+-EXTRA_libclientcomm_a_SOURCES = rpcif.x                          
++EXTRA_librasclientcomm_la_SOURCES = rpcif.x                          
+ BUILT_SOURCES= rpcif_clnt.cc rpcif_xdr.c rpcif.h rpcif_svc.cc
+ CLEANFILES=rpcif_clnt.cc rpcif_xdr.c rpcif.h rpcif.h.tmp rpcif_clnt.c.tmp \
+            rpcif_svc.cc.tmp rpcif_svc.cc
+--- rasdaman-8.3.1/commline/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/commline/Makefile.am	2012-11-13 16:08:45.326022868 +0100
+@@ -27,5 +27,5 @@
+ #
+ ##################################################################
+ 
+-lib_LIBRARIES=libcommline.a
+-libcommline_a_SOURCES=cmlparser.cc cmlparser.hh
++lib_LTLIBRARIES=librascommline.la
++librascommline_la_SOURCES=cmlparser.cc cmlparser.hh
+--- rasdaman-8.3.1/compression/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/compression/Makefile.am	2012-11-13 16:09:01.406022193 +0100
+@@ -31,6 +31,6 @@
+ AM_CXXFLAGS=@CLIENTCXXFLAGS@
+ AM_LDFLAGS=@CLIENTLDFLAGS@
+ 
+-lib_LIBRARIES = libcompression.a
+-libcompression_a_SOURCES=tilecompression.cc tilecompression.hh tilecompnone.cc tilecompnone.hh \
++lib_LTLIBRARIES = librascompression.la
++librascompression_la_SOURCES=tilecompression.cc tilecompression.hh tilecompnone.cc tilecompnone.hh \
+ 						 tilecompother.cc tilecompother.hh
+--- rasdaman-8.3.1/conversion/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/conversion/Makefile.am	2012-11-13 16:09:16.652688219 +0100
+@@ -29,8 +29,8 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES=libconversion.a
+-libconversion_a_SOURCES= convertor.cc convfactory.cc tiff.cc hdf.cc png.cc jpeg.cc \
++lib_LTLIBRARIES=librasconversion.la
++librasconversion_la_SOURCES= convertor.cc convfactory.cc tiff.cc hdf.cc png.cc jpeg.cc \
+                          csv.cc bmp.cc vff.cc tor.cc dem.cc ecw.cc memfs.cc netcdf.cc \
+                          convertor.hh convfactory.hh tiff.hh hdf.hh png.hh jpeg.hh \
+                          csv.hh bmp.hh vff.hh tor.hh dem.hh ecw.hh memfs.hh \
+--- rasdaman-8.3.1/httpserver/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/httpserver/Makefile.am	2012-11-13 16:09:34.819354124 +0100
+@@ -24,9 +24,9 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES=libhttpserver.a
++lib_LTLIBRARIES=librashttpserver.la
+ AM_CFLAGS=$(CXXFLAGS)
+-libhttpserver_a_SOURCES= types.h http.h server.h defs.h http-defs.h protos.h \
++librashttpserver_la_SOURCES= types.h http.h server.h defs.h http-defs.h protos.h \
+                     logging.cc signals.cc config.cc support.cc childs.cc init.cc \
+                     http-support.cc http-methods.cc http-fields.cc http-date.cc \
+                     http-error.cc http-readmsg.cc http-writemsg.cc \
+--- rasdaman-8.3.1/indexmgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/indexmgr/Makefile.am	2012-11-13 16:09:50.926020114 +0100
+@@ -29,8 +29,8 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES=libindexmgr.a
+-libindexmgr_a_SOURCES= mddobjix.cc transdirix.cc keyobject.cc srptindexlogic.cc \
++lib_LTLIBRARIES=librasindexmgr.la
++librasindexmgr_la_SOURCES= mddobjix.cc transdirix.cc keyobject.cc srptindexlogic.cc \
+                        sdirindexlogic.cc indexds.cc hierindexds.cc srcindexlogic.cc \
+                        mddobjix.hh transdirix.hh keyobject.hh srptindexlogic.hh \
+                        sdirindexlogic.hh indexds.hh hierindexds.hh srcindexlogic.hh
+--- rasdaman-8.3.1/mddmgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/mddmgr/Makefile.am	2012-11-13 16:10:18.849352277 +0100
+@@ -30,8 +30,8 @@
+ 
+ AM_CXXFLAGS=@BASEDBCXXFLAGS@
+ 
+-lib_LIBRARIES= libmddmgr.a
+-libmddmgr_a_SOURCES= mddobj.cc mddobj.hh \
++lib_LTLIBRARIES= librasmddmgr.la
++librasmddmgr_la_SOURCES= mddobj.cc mddobj.hh \
+                      mddcoll.cc mddcoll.hh \
+                      mddcolliter.cc mddcolliter.icc mddcolliter.hh
+ 
+--- rasdaman-8.3.1/network/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/network/Makefile.am	2013-01-26 21:02:21.838150820 +0100
+@@ -28,8 +28,8 @@
+ #
+ ##################################################################
+ 
+-lib_LIBRARIES=libnetwork.a
+-libnetwork_a_SOURCES= akgnet_commbuffer.cc akgnet_commbuffer.hh \
++lib_LTLIBRARIES=librasnetwork.la
++librasnetwork_la_SOURCES= akgnet_commbuffer.cc akgnet_commbuffer.hh \
+                       akgnet_file.cc akgnet_file.hh \
+                       akgnet_nbcomm.cc akgnet_nbcomm.hh \
+                       akgnet_server.cc akgnet_server.hh \
+--- rasdaman-8.3.1/qlparser/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/qlparser/Makefile.am	2013-01-26 21:03:06.604816554 +0100
+@@ -30,7 +30,7 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES=libqlparser.a
++lib_LTLIBRARIES=librasqlparser.la
+ 
+ # -I gnererates an interactive scanner which doesn't try to look ahead past a newline
+ # -i generates a scanner which doesn't care about upper and lower case; doesn't work
+@@ -41,7 +41,7 @@
+ AM_YFLAGS=-d -y
+ AM_CXXFLAGS=@BASEDBCXXFLAGS@
+ AM_CFLAGS=$(CXXFLAGS)
+-libqlparser_a_SOURCES=oql.yy lex.ll alloca.c\
++librasqlparser_la_SOURCES=oql.yy lex.ll alloca.c\
+                       symtab.cc symtab.hh \
+                       qtoncstream.cc qtoncstream.hh qtoncstream.icc \
+                       qtmddaccess.cc qtmddaccess.hh qtmddaccess.icc \
+@@ -90,7 +90,7 @@
+ 					  qtmddconfig.hh qtmddconfig.cc \
+ 					  qtmddcfgop.hh qtmddcfgop.cc
+ 
+-EXTRA_libqlparser_a_SOURCES = autogen_qtui.hh autogen_qtui.icc autogen_qtui.cc
++EXTRA_librasqlparser_la_SOURCES = autogen_qtui.hh autogen_qtui.icc autogen_qtui.cc
+ 
+ BUILT_SOURCES=lex.cc oql.cc oql.h
+ CLEANFILES=lex.cc oql.cc oql.h
+--- rasdaman-8.3.1/rascontrol/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/rascontrol/Makefile.am	2013-01-26 21:05:14.891480546 +0100
+@@ -38,13 +38,13 @@
+                    ../rasmgr/ras_crypto.cc ../rasmgr/ras_crypto.hh \
+                    rasmgr_utils_conf.cc rasmgr_utils_conf.hh \
+                    rasmgr_utils_comm.cc rasmgr_utils_comm.hh 
+-rascontrol_LDADD = ../network/libnetwork.a ../commline/libcommline.a
++rascontrol_LDADD = ../network/librasnetwork.la ../commline/librascommline.la
+ 
+ raspasswd_SOURCES=raspasswd.cc raspasswd.hh \
+                   ../rasmgr/ras_crypto.cc ../rasmgr/ras_crypto.hh \
+                   rasmgr_utils_comm.cc rasmgr_utils_comm.hh \
+                   rasmgr_utils_conf.cc rasmgr_utils_conf.hh
+-raspasswd_LDADD = ../network/libnetwork.a ../commline/libcommline.a                  
++raspasswd_LDADD = ../network/librasnetwork.la ../commline/librascommline.la
+ 
+ SUBDIRS=../network ../commline
+ 
+--- rasdaman-8.3.1/rasdl/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/rasdl/Makefile.am	2013-01-26 21:06:37.904812149 +0100
+@@ -40,13 +40,13 @@
+               alloca.cc rasdl.cc rasdl_error.cc rasdl_error.hh \
+               template_inst.hh yparse.hh \
+               ../mymalloc/mymalloc.h ../mymalloc/mymalloc_svc.cc
+-rasdl_LDADD = ../reladminif/libreladminif.a ../relmddif/librelmddif.a \
+-              ../relstorageif/librelstorageif.a ../relindexif/librelindexif.a \
+-              ../relcatalogif/librelcatalogif.a ../relblobif/librelblobif.a \
+-              ../indexmgr/libindexmgr.a ../catalogmgr/libcatalogmgr.a \
+-              ../storagemgr/libstoragemgr.a ../tilemgr/libtilemgr.a \
+-              ../commline/libcommline.a ../raslib/libraslib.a \
+-              ../conversion/libconversion.a ../rasodmg/librasodmg.a
++rasdl_LDADD = ../reladminif/libreladminif.la ../relmddif/librelmddif.la \
++              ../relstorageif/librelstorageif.la ../relindexif/librelindexif.la \
++              ../relcatalogif/librelcatalogif.la ../relblobif/librelblobif.la \
++              ../indexmgr/librasindexmgr.la ../catalogmgr/librascatalogmgr.la \
++              ../storagemgr/librasstoragemgr.la ../tilemgr/librastilemgr.la \
++              ../commline/librascommline.la ../raslib/libraslib.la \
++              ../conversion/librasconversion.la ../rasodmg/librasodmg.la
+ 
+ BUILT_SOURCES=lex.cc odl.cc odl.h              
+ CLEANFILES=lex.cc odl.cc odl.h
+--- rasdaman-8.3.1/raslib/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/raslib/Makefile.am	2013-01-26 21:07:15.464811366 +0100
+@@ -31,8 +31,8 @@
+ AM_CXXFLAGS=@CLIENTCXXFLAGS@
+ AM_LDFLAGS=@CLIENTLDFLAGS@
+ 
+-lib_LIBRARIES=libraslib.a
+-libraslib_a_SOURCES= sinterval.hh dlist.hh point.hh minterval.hh error.hh \
++lib_LTLIBRARIES=libraslib.la
++libraslib_la_SOURCES= sinterval.hh dlist.hh point.hh minterval.hh error.hh \
+                      rmdebug.hh rminit.hh metaobject.hh type.hh marraytype.hh \
+                      basetype.hh primitivetype.hh sintervaltype.hh \
+                      collectiontype.hh property.hh attribute.hh mintervaltype.hh \
+--- rasdaman-8.3.1/rasmgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/rasmgr/Makefile.am	2013-01-26 21:07:48.704810674 +0100
+@@ -39,7 +39,7 @@
+                rasmgr.hh rasmgr_protocol.hh rasmgr_master.hh \
+                ../mymalloc/mymalloc_cln.cc ../mymalloc/mymalloc.h
+ 
+-rasmgr_LDADD= ../raslib/libraslib.a ../network/libnetwork.a ../commline/libcommline.a
++rasmgr_LDADD= ../raslib/libraslib.la ../network/librasnetwork.la ../commline/librascommline.la
+ 
+ SUBDIRS=../mymalloc ../network ../commline ../raslib
+ 
+--- rasdaman-8.3.1/rasodmg/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/rasodmg/Makefile.am	2013-01-26 21:17:06.438132384 +0100
+@@ -31,9 +31,9 @@
+ AM_CXXFLAGS=@CLIENTCXXFLAGS@
+ AM_LDFLAGS=@CLIENTLDFLAGS@
+ 
+-lib_LIBRARIES=librasodmg.a
++lib_LTLIBRARIES=librasodmg.la
+ 
+-librasodmg_a_SOURCES = collection.cc collection.hh collection.icc \
++librasodmg_la_SOURCES = collection.cc collection.hh collection.icc \
+                        set.cc set.hh \
+                        iterator.cc iterator.hh iterator.icc \
+                        marray.cc marray.hh marray.icc \
+--- rasdaman-8.3.1/reladminif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/reladminif/Makefile.am	2013-01-26 21:17:54.838131379 +0100
+@@ -38,8 +38,8 @@
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+ 
+-lib_LIBRARIES=libreladminif.a
+-libreladminif_a_SOURCES=adminifcommon.cc adminif.hh databaseifcommon.cc databaseif.hh \
++lib_LTLIBRARIES=libreladminif.la
++libreladminif_la_SOURCES=adminifcommon.cc adminif.hh databaseifcommon.cc databaseif.hh \
+                         transactionifcommon.cc transactionif.hh sqlerror.hh \
+                         oidifcommon.cc oidif.hh dbobject.cc dbobject.hh \
+                         dbnamedobject.cc dbnamedobject.hh eoid.cc eoid.hh \
+@@ -47,13 +47,13 @@
+                         dbobjectiterator.cc dbobjectiterator.hh \
+                         externs.h lists.h binaryrepresentation.hh destroyable.hh \
+                         sqlglobals.h dbobjectiditerator.hh
+-EXTRA_libreladminif_a_SOURCES=adminif.pgc databaseif.pgc transactionif.pgc \
++EXTRA_libreladminif_la_SOURCES=adminif.pgc databaseif.pgc transactionif.pgc \
+                         sqlerror.pgc oidif.pgc objectbroker.pgc \
+                         dbobjectiditerator.cc
+ 
+-libreladminif_a_LIBADD= adminif.$(OBJEXT) databaseif.$(OBJEXT) transactionif.$(OBJEXT) \
++libreladminif_la_LIBADD= adminif.$(OBJEXT) databaseif.$(OBJEXT) transactionif.$(OBJEXT) \
+                         sqlerror.$(OBJEXT) oidif.$(OBJEXT) objectbroker.$(OBJEXT) 
+-libreladminif_a_DEPENDENCIES= adminif.$(OBJEXT) databaseif.$(OBJEXT) transactionif.$(OBJEXT) \
++libreladminif_la_DEPENDENCIES= adminif.$(OBJEXT) databaseif.$(OBJEXT) transactionif.$(OBJEXT) \
+                               sqlerror.$(OBJEXT) oidif.$(OBJEXT) objectbroker.$(OBJEXT) 
+ 
+ 
+--- rasdaman-8.3.1/relblobif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/relblobif/Makefile.am	2013-01-26 21:18:25.928130726 +0100
+@@ -37,13 +37,13 @@
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+ 
+-lib_LIBRARIES=librelblobif.a
+-librelblobif_a_SOURCES= blobtile.hh \
++lib_LTLIBRARIES=librelblobif.la
++librelblobif_la_SOURCES= blobtile.hh \
+                         dbtile.cc dbtile.hh inlinetile.cc inlinetile.hh \
+                         blobtilecommon.cc tileid.hh
+-EXTRA_librelblobif_a_SOURCES=blobtile.pgc 
+-librelblobif_a_LIBADD=blobtile.$(OBJEXT)
+-librelblobif_a_DEPENDENCIES=blobtile.$(OBJEXT)
++EXTRA_librelblobif_la_SOURCES=blobtile.pgc 
++librelblobif_la_LIBADD=blobtile.$(OBJEXT)
++librelblobif_la_DEPENDENCIES=blobtile.$(OBJEXT)
+ 
+ BUILT_SOURCES=blobtile.@EMBEDDEDSQLOUT@
+ 
+--- rasdaman-8.3.1/relcatalogif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/relcatalogif/Makefile.am	2013-01-26 21:19:01.321463319 +0100
+@@ -40,8 +40,8 @@
+ .@EMBEDDEDSQLEXT@.@EMBEDDEDSQLOUT@:
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+-lib_LIBRARIES=librelcatalogif.a
+-librelcatalogif_a_SOURCES= type.C type.hh basetype.C basetype.hh atomictype.C ulongtype.C ulongtype.hh ushorttype.C ushorttype.hh \
++lib_LTLIBRARIES=librelcatalogif.la
++librelcatalogif_la_SOURCES= type.C type.hh basetype.C basetype.hh atomictype.C ulongtype.C ulongtype.hh ushorttype.C ushorttype.hh \
+                        booltype.C booltype.hh compositetype.C compositetype.hh structtypecommon.cc structtype.hh structtype.icc \
+                        longtype.C longtype.hh shorttype.C shorttype.hh octettype.C octettype.hh doubletype.C doubletype.hh\
+                        floattype.C floattype.hh chartype.C chartype.hh collectiontype.C collectiontype.hh settypecommon.cc settype.hh\
+@@ -49,10 +49,10 @@
+                        mdddimensiontypecommon.cc mdddimensiontype.hh dbminterval.hh inlineminterval.cc inlineminterval.hh \
+                        typeiterator.hh atomictype.hh uintegraltype.hh uintegraltype.icc integraltype.hh \
+                        integraltype.icc realtype.hh realtype.icc alltypes.hh complextype.hh complextype.icc
+-EXTRA_librelcatalogif_a_SOURCES= settype.pgc mddtype.pgc mddbasetype.pgc mdddomaintype.pgc mdddimensiontype.pgc structtype.pgc dbminterval.pgc
+-librelcatalogif_a_LIBADD= settype.$(OBJEXT) mddtype.$(OBJEXT) mddbasetype.$(OBJEXT) mdddimensiontype.$(OBJEXT) \
++EXTRA_librelcatalogif_la_SOURCES= settype.pgc mddtype.pgc mddbasetype.pgc mdddomaintype.pgc mdddimensiontype.pgc structtype.pgc dbminterval.pgc
++librelcatalogif_la_LIBADD= settype.$(OBJEXT) mddtype.$(OBJEXT) mddbasetype.$(OBJEXT) mdddimensiontype.$(OBJEXT) \
+                       structtype.$(OBJEXT) dbminterval.$(OBJEXT) mdddomaintype.$(OBJEXT)
+-librelcatalogif_a_DEPENDENCIES= settype.$(OBJEXT) mddtype.$(OBJEXT) mddbasetype.$(OBJEXT) mdddimensiontype.$(OBJEXT) \
++librelcatalogif_la_DEPENDENCIES= settype.$(OBJEXT) mddtype.$(OBJEXT) mddbasetype.$(OBJEXT) mdddimensiontype.$(OBJEXT) \
+                             structtype.$(OBJEXT) dbminterval.$(OBJEXT) mdddomaintype.$(OBJEXT)
+ 
+ BUILT_SOURCES= settype.@EMBEDDEDSQLOUT@ mddtype.@EMBEDDEDSQLOUT@ mddbasetype.@EMBEDDEDSQLOUT@ \
+--- rasdaman-8.3.1/relindexif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/relindexif/Makefile.am	2013-01-26 21:39:17.998104629 +0100
+@@ -33,15 +33,15 @@
+ .@EMBEDDEDSQLEXT@.@EMBEDDEDSQLOUT@:
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+-lib_LIBRARIES=librelindexif.a
+-librelindexif_a_SOURCES=dbrcindexdscommon.cc dbrcindexds.hh \
++lib_LTLIBRARIES=librelindexif.la
++librelindexif_la_SOURCES=dbrcindexdscommon.cc dbrcindexds.hh \
+                         dbtcindexcommon.cc dbtcindex.hh \
+                         hierindexcommon.cc hierindex.hh \
+                         indexid.hh
+-EXTRA_librelindexif_a_SOURCES=dbrcindexds.pgc dbtcindex.pgc hierindex.pgc 
++EXTRA_librelindexif_la_SOURCES=dbrcindexds.pgc dbtcindex.pgc hierindex.pgc 
+ 
+-librelindexif_a_LIBADD=dbrcindexds.$(OBJEXT) dbtcindex.$(OBJEXT) hierindex.$(OBJEXT)
+-librelindexif_a_DEPENDENCIES=dbrcindexds.$(OBJEXT) dbtcindex.$(OBJEXT) hierindex.$(OBJEXT)
++librelindexif_la_LIBADD=dbrcindexds.$(OBJEXT) dbtcindex.$(OBJEXT) hierindex.$(OBJEXT)
++librelindexif_la_DEPENDENCIES=dbrcindexds.$(OBJEXT) dbtcindex.$(OBJEXT) hierindex.$(OBJEXT)
+ 
+ BUILT_SOURCES=dbrcindexds.@EMBEDDEDSQLOUT@ dbtcindex.@EMBEDDEDSQLOUT@ hierindex.@EMBEDDEDSQLOUT@
+ 
+--- rasdaman-8.3.1/relmddif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/relmddif/Makefile.am	2013-01-26 21:39:58.584770448 +0100
+@@ -36,11 +36,11 @@
+ .@EMBEDDEDSQLEXT@.@EMBEDDEDSQLOUT@:
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+-lib_LIBRARIES=librelmddif.a
+-librelmddif_a_SOURCES=dbmddsetcommon.cc dbmddobj.hh dbmddset.hh dbiterid.hh mddid.hh
+-EXTRA_librelmddif_a_SOURCES= dbmddobj.pgc dbmddset.pgc 
+-librelmddif_a_LIBADD=dbmddobj.$(OBJEXT) dbmddset.$(OBJEXT)
+-librelmddif_a_DEPENDENCIES=dbmddobj.$(OBJEXT) dbmddset.$(OBJEXT)
++lib_LTLIBRARIES=librelmddif.la
++librelmddif_la_SOURCES=dbmddsetcommon.cc dbmddobj.hh dbmddset.hh dbiterid.hh mddid.hh
++EXTRA_librelmddif_la_SOURCES= dbmddobj.pgc dbmddset.pgc 
++librelmddif_la_LIBADD=dbmddobj.$(OBJEXT) dbmddset.$(OBJEXT)
++librelmddif_la_DEPENDENCIES=dbmddobj.$(OBJEXT) dbmddset.$(OBJEXT)
+ 
+ BUILT_SOURCES=dbmddobj.@EMBEDDEDSQLOUT@ dbmddset.@EMBEDDEDSQLOUT@
+ 
+--- rasdaman-8.3.1/relstorageif/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/relstorageif/Makefile.am	2013-01-26 21:40:28.418103161 +0100
+@@ -36,11 +36,11 @@
+ 	$(EMBEDDEDSQLPRECOMPILER) $@ $<
+ 
+ 
+-lib_LIBRARIES=librelstorageif.a
+-librelstorageif_a_SOURCES= dbstoragelayout.hh storageid.hh empty.cc
+-EXTRA_librelstorageif_a_SOURCES= dbstoragelayout.pgc 
+-librelstorageif_a_LIBADD= dbstoragelayout.$(OBJEXT) 
+-librelstorageif_a_DEPENDENCIES= dbstoragelayout.$(OBJEXT) 
++lib_LTLIBRARIES=librelstorageif.la
++librelstorageif_la_SOURCES= dbstoragelayout.hh storageid.hh empty.cc
++EXTRA_librelstorageif_la_SOURCES= dbstoragelayout.pgc 
++librelstorageif_la_LIBADD= dbstoragelayout.$(OBJEXT) 
++librelstorageif_la_DEPENDENCIES= dbstoragelayout.$(OBJEXT) 
+ 
+ BUILT_SOURCES= dbstoragelayout.@EMBEDDEDSQLOUT@ 
+ 
+--- rasdaman-8.3.1/server/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/server/Makefile.am	2013-01-26 21:41:43.338101604 +0100
+@@ -39,15 +39,15 @@
+                   ../debug/debug-clt.hh ../debug/debug.hh ../debug/debug-srv.hh \
+                   ../include/bool.h ../include/globals.hh ../include/rasdaman.hh \
+                   ../include/stdexcept.h
+-rasserver_LDADD=../servercomm/libservercomm.a ../qlparser/libqlparser.a ../conversion/libconversion.a \
+-				../rasodmg/librasodmg.a \
+-                ../raslib/libraslib.a ../storagemgr/libstoragemgr.a ../reladminif/libreladminif.a \
+-                ../tilemgr/libtilemgr.a ../mddmgr/libmddmgr.a \
+-                ../catalogmgr/libcatalogmgr.a ../relmddif/librelmddif.a ../relstorageif/librelstorageif.a \
+-                ../relcatalogif/librelcatalogif.a ../indexmgr/libindexmgr.a ../relblobif/librelblobif.a \
+-                ../relindexif/librelindexif.a ../httpserver/libhttpserver.a \
+-                ../network/libnetwork.a ../commline/libcommline.a \
+-                ../relcatalogif/librelcatalogif.a ../raslib/libraslib.a 
++rasserver_LDADD=../servercomm/librasservercomm.la ../qlparser/librasqlparser.la ../conversion/librasconversion.la \
++				../rasodmg/librasodmg.la \
++                ../raslib/libraslib.la ../storagemgr/librasstoragemgr.la ../reladminif/libreladminif.la \
++                ../tilemgr/librastilemgr.la ../mddmgr/librasmddmgr.la \
++                ../catalogmgr/librascatalogmgr.la ../relmddif/librelmddif.la ../relstorageif/librelstorageif.la \
++                ../relcatalogif/librelcatalogif.la ../indexmgr/librasindexmgr.la ../relblobif/librelblobif.la \
++                ../relindexif/librelindexif.la ../httpserver/librashttpserver.la \
++                ../network/librasnetwork.la ../commline/librascommline.la \
++                ../relcatalogif/librelcatalogif.la ../raslib/libraslib.la
+ 
+ SUBDIRS = ../relblobif ../relindexif ../relmddif ../relcatalogif ../reladminif ../relstorageif \
+           ../indexmgr ../catalogmgr ../tilemgr ../storagemgr ../commline ../network \
+--- rasdaman-8.3.1/servercomm/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/servercomm/Makefile.am	2013-01-26 21:42:21.554767470 +0100
+@@ -31,8 +31,8 @@
+ AM_CXXFLAGS=@BASEDBCXXFLAGS@
+ AM_LDFLAGS=@BASEDBLDFLAGS@
+ 
+-lib_LIBRARIES=libservercomm.a
+-libservercomm_a_SOURCES=../clientcomm/rpcif_xdr.c ../clientcomm/rpcif_svc.cc servercomm.cc \
++lib_LTLIBRARIES=librasservercomm.la
++librasservercomm_la_SOURCES=../clientcomm/rpcif_xdr.c ../clientcomm/rpcif_svc.cc servercomm.cc \
+                         servercomm2.cc manager.cc callbackmgr.cc httpserver.cc \
+                         ../mymalloc/mymalloc_svc.cc ../mymalloc/mymalloc.h \
+                         ../clientcomm/rpcif.h callbackmgr.hh httpserver.hh httpserver.icc \
+@@ -51,7 +51,7 @@
+                         ../rnprotocol/rnprasserver.hh \
+                         ../rnprotocol/rnpservercomm.cc \
+                         ../rnprotocol/rnpservercomm.hh
+-libservercomm_a_CPPFLAGS=-I../rnprotocol                        
++librasservercomm_la_CPPFLAGS=-I../rnprotocol
+ 
+ BUILT_SOURCES=../clientcomm/rpcif_xdr.c ../clientcomm/rpcif.h ../clientcomm/rpcif_svc.cc
+ 
+--- rasdaman-8.3.1/storagemgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/storagemgr/Makefile.am	2013-01-26 21:42:54.411433452 +0100
+@@ -28,8 +28,8 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES = libstoragemgr.a
+-libstoragemgr_a_SOURCES = sstoragelayout.cc sstoragelayout.hh \
++lib_LTLIBRARIES = librasstoragemgr.la
++librasstoragemgr_la_SOURCES = sstoragelayout.cc sstoragelayout.hh \
+ 							stgmddconfig.cc stgmddconfig.hh
+ 
+ CLEANFILES= core client.bm client.dbg client.log ir.out
+--- rasdaman-8.3.1/tilemgr/Makefile.am.orig	2012-03-27 18:28:13.000000000 +0200
++++ rasdaman-8.3.1/tilemgr/Makefile.am	2013-01-26 22:08:07.078068591 +0100
+@@ -29,5 +29,5 @@
+ # 
+ ##################################################################
+ 
+-lib_LIBRARIES = libtilemgr.a
+-libtilemgr_a_SOURCES = tile.cc tile.hh tile.icc tiler.cc tiler.hh
++lib_LTLIBRARIES = librastilemgr.la
++librastilemgr_la_SOURCES = tile.cc tile.hh tile.icc tiler.cc tiler.hh

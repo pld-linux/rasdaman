@@ -1,0 +1,83 @@
+--- rasdaman-8.4.0/conversion/png.cc.orig	2014-05-11 16:13:16.722901001 +0200
++++ rasdaman-8.4.0/conversion/png.cc	2014-05-11 16:44:25.876195376 +0200
+@@ -182,7 +182,7 @@
+             RMInit::logOut << "Error: unable to allocate PNG header." << endl;
+             i=1;
+         }
+-        else if (setjmp(write_ptr->jmpbuf))
++        else if (png_jmpbuf(write_ptr))
+         {
+             png_destroy_write_struct(&write_ptr, &info_ptr);
+             RMInit::logOut << "Error: unable to save PNG stack" << endl;
+@@ -228,10 +228,12 @@
+         sig_bit.gray = 1;
+         if (transpFound)
+         {
+-            itemsScanned = sscanf( trans_string, " %hi ", &(info_ptr->trans_vals.gray) );
++            png_color_16 pc;
++            itemsScanned = sscanf( trans_string, " %hi ", &(pc.gray) );
++            pc.gray &= 0xff;
+             if (itemsScanned == 1)          // all required items found?
+             {
+-                info_ptr->valid |= PNG_INFO_tRNS; // activate tRNS chunk
++                png_set_tRNS(write_ptr, info_ptr, NULL, 0, &pc); // activate tRNS chunk
+             }
+             else
+             {
+@@ -250,10 +252,12 @@
+         sig_bit.gray = 8;
+         if (transpFound)
+         {
+-            itemsScanned = sscanf( trans_string, " %hi ", &(info_ptr->trans_vals.gray) );
++            png_color_16 pc;
++            itemsScanned = sscanf( trans_string, " %hi ", &(pc.gray) );
++            pc.gray &= 0xff;
+             if (itemsScanned == 1)          // all required items found?
+             {
+-                info_ptr->valid |= PNG_INFO_tRNS; // activate tRNS chunk
++                png_set_tRNS(write_ptr, info_ptr, NULL, 0, &pc); // activate tRNS chunk
+             }
+             else
+             {
+@@ -275,10 +279,14 @@
+         sig_bit.blue = 8;
+         if (transpFound)
+         {
+-            itemsScanned = sscanf( trans_string, " ( %hi ; %hi ; %hi ) ", &(info_ptr->trans_vals.red), &(info_ptr->trans_vals.green), &(info_ptr->trans_vals.blue) );
++            png_color_16 pc;
++            itemsScanned = sscanf( trans_string, " ( %hi ; %hi ; %hi ) ", &(pc.red), &(pc.green), &(pc.blue) );
++            pc.red &= 0xff;
++            pc.green &= 0xff;
++            pc.blue &= 0xff;
+             if (itemsScanned == 3)          // all required items found?
+             {
+-                info_ptr->valid |= PNG_INFO_tRNS; // activate tRNS chunk
++                png_set_tRNS(write_ptr, info_ptr, NULL, 0, &pc); // activate tRNS chunk
+             }
+             else
+             {
+@@ -328,15 +336,6 @@
+         throw r_Error(r_Error::r_Error_General);
+     } // switch
+ 
+-    // adjust transparency color value to pixel depth (unconditionally, even if transparency is unused)
+-    if (bps == 8)
+-    {
+-        info_ptr->trans_vals.red   &= 0xff;
+-        info_ptr->trans_vals.green &= 0xff;
+-        info_ptr->trans_vals.blue  &= 0xff;
+-        info_ptr->trans_vals.gray  &= 0xff;
+-    }
+-
+     if (trans_string != NULL)
+     {
+         delete [] trans_string;
+@@ -508,7 +507,7 @@
+     {
+         info_ptr = png_create_info_struct(read_ptr);
+         if (info_ptr == NULL) i=1;
+-        else if (setjmp(read_ptr->jmpbuf))
++        else if (png_jmpbuf(read_ptr))
+         {
+             png_destroy_read_struct(&read_ptr, &info_ptr, NULL);
+             RMInit::logOut << "r_Conv_PNG::convertFrom(" << options << "): unable to save the stack" << endl;
