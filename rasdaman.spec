@@ -126,7 +126,7 @@ CXXFLAGS="%{rpmcxxflags} -fPIC"
 	%{?with_hdf4:--with-hdf4} \
 	--with-logdir=/var/log/rasdaman \
 	%{?with_netcdf:--with-netcdf}
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
