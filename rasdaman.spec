@@ -15,7 +15,7 @@ Summary:	Rasdaman - intelligent multidimensional raster server
 Summary(pl.UTF-8):	Rasdaman - inteligentny, wielowymiarowy serwer danych rastrowych
 Name:		rasdaman
 Version:	8.4.0
-Release:	2
+Release:	3
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: http://rasdaman.eecs.jacobs-university.de/wiki/Versions
