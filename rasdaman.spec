@@ -1,4 +1,5 @@
 # TODO: complete Java parts
+# - build r[as]view program from sources
 # NOTE:
 # - inter-library dependencies contain too many cycles to make shared libraries
 # - some libraries have too common names to put them into system lib directory
@@ -14,7 +15,7 @@ Summary:	Rasdaman - intelligent multidimensional raster server
 Summary(pl.UTF-8):	Rasdaman - inteligentny, wielowymiarowy serwer danych rastrowych
 Name:		rasdaman
 Version:	8.4.0
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: http://rasdaman.eecs.jacobs-university.de/wiki/Versions
@@ -110,6 +111,9 @@ Dokumentacja do oprogramowania pośredniego rasdaman.
 ln -sf oql.hh qlparser/oql.h
 ln -sf odl.hh rasdl/odl.h
 
+# TODO: kill precompiled binary, force rebuild (no makefile as of 8.4.0)
+#%{__rm} applications/rview/rview
+
 %build
 %{__libtoolize}
 %{__aclocal} -I m4
@@ -157,6 +161,9 @@ ln -sf %{_includedir}/rasdaman $RPM_BUILD_ROOT%{_libdir}/rasdaman/include
 %{__rm} $RPM_BUILD_ROOT%{_prefix}/.rviewrc
 %{__rm} $RPM_BUILD_ROOT/var/log/rasdaman/empty
 
+# precompiled x86 binary (TODO: compile it)
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/rasview
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -184,7 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/raspasswd
 %attr(755,root,root) %{_bindir}/rasql
 %attr(755,root,root) %{_bindir}/rasserver
-%attr(755,root,root) %{_bindir}/rasview
+#%attr(755,root,root) %{_bindir}/rasview
 %attr(755,root,root) %{_bindir}/start_rasdaman.sh
 %attr(755,root,root) %{_bindir}/stop_rasdaman.sh
 %attr(755,root,root) %{_bindir}/update_petascopedb.sh
