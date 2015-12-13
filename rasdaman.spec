@@ -10,12 +10,13 @@
 %bcond_without	hdf4		# HDF 4 support
 %bcond_without	java		# Java-based components
 %bcond_without	netcdf		# NetCDF support
+%bcond_with	docs		# Build documentation
 #
 Summary:	Rasdaman - intelligent multidimensional raster server
 Summary(pl.UTF-8):	Rasdaman - inteligentny, wielowymiarowy serwer danych rastrowych
 Name:		rasdaman
 Version:	8.4.0
-Release:	4
+Release:	5
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: http://rasdaman.eecs.jacobs-university.de/wiki/Versions
@@ -126,7 +127,7 @@ CXXFLAGS="%{rpmcxxflags} -fPIC"
 	--includedir=%{_includedir}/rasdaman \
 	--libdir=%{_libdir}/rasdaman/lib \
 	%{!?with_java:--disable-java} \
-	--with-docs \
+	%{__with_without docs} \
 	%{?with_hdf4:--with-hdf4} \
 	--with-logdir=/var/log/rasdaman \
 	%{?with_netcdf:--with-netcdf}
@@ -134,6 +135,7 @@ CXXFLAGS="%{rpmcxxflags} -fPIC"
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_docdir},%{_examplesdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -146,11 +148,13 @@ rm -rf $RPM_BUILD_ROOT
 # XXX: needs patch
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/labels.txt $RPM_BUILD_ROOT%{_datadir}/rasdaman
 
-install -d $RPM_BUILD_ROOT{%{_docdir},%{_examplesdir}}
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/rasdaman/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/rasdaman/examples $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
+%if %{with docs}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/rasdaman/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 # package just PDFs, no MS DOCs
 %{__rm} $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/pdf/*.doc
+%endif
 
 # provide "include" and "lib" inside %{_libdir}/rasdaman tree
 ln -sf %{_includedir}/rasdaman $RPM_BUILD_ROOT%{_libdir}/rasdaman/include
@@ -244,5 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
+%if %{with docs}
 %{_docdir}/%{name}-%{version}
+%endif
 %{_examplesdir}/%{name}-%{version}
