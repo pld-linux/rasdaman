@@ -10,7 +10,7 @@
 %bcond_without	hdf4		# HDF 4 support
 %bcond_without	java		# Java-based components
 %bcond_without	netcdf		# NetCDF support
-%bcond_with	docs		# Build documentation
+%bcond_with	doc		# Build documentation
 #
 Summary:	Rasdaman - intelligent multidimensional raster server
 Summary(pl.UTF-8):	Rasdaman - inteligentny, wielowymiarowy serwer danych rastrowych
@@ -150,7 +150,7 @@ install -d $RPM_BUILD_ROOT{%{_docdir},%{_examplesdir}}
 
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/rasdaman/examples $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-%if %{with docs}
+%if %{with doc}
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/rasdaman/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 # package just PDFs, no MS DOCs
 %{__rm} $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/pdf/*.doc
@@ -248,7 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%if %{with docs}
+%if %{with doc}
 %{_docdir}/%{name}-%{version}
 %endif
 %{_examplesdir}/%{name}-%{version}
